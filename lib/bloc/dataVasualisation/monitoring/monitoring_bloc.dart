@@ -1,22 +1,20 @@
 import 'dart:async';
 
-import 'package:enpal/bloc/battery/monitoring_event.dart';
-import 'package:enpal/bloc/monitoring_state.dart';
-import 'package:enpal/data/repository/monitoring_repo.dart';
-import 'package:enpal/utils/datautils.dart';
+import 'package:enpal/bloc/dataVasualisation/monitoring/monitoring_event.dart';
+import 'package:enpal/bloc/dataVasualisation/monitoring/monitoring_state.dart';
+import 'package:enpal/data/repository/impl/monitoring_repo.dart';
+import 'package:enpal/utils/dateutils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
-class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
-  // static final BatteryBloc _instance = BatteryBloc._internal();
+ abstract class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
+
   MonitoringBloc() : super(Initial()) {
     on<FetchMonitoringDataEvent>(_onBatteryDataFetchHandler);
     on<MonitoringDataPollEvent>(_onBatteryDataPoll);
 
+    // Start polling when the bloc is instantiated
     _startPolling();
   }
-
-  // factory BatteryBloc() => _instance;
 
   final MonitoringRepo _monitoringRepo = MonitoringRepo();
   Timer? _timer;
@@ -24,21 +22,21 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
   void _onBatteryDataFetchHandler(
       FetchMonitoringDataEvent event, Emitter<MonitoringState> emit) async {
     emit(MonitoringDataIsLoading());
-    // close the polling if filtering is happeining
+    
+    // Close polling if filtering is happening
     if (todayDateFormat() != event.date) {
       closePolling();
     } else {
-      checkifPolling();
+      checkIfPolling();
     }
+
     try {
       final data = await _monitoringRepo.getMonitoringData(
         date: event.date,
         type: "battery",
       );
-      int totalEnergy = 0;
-      for (var number in data) {
-        totalEnergy += number.value;
-      }
+
+      int totalEnergy = data.fold(0, (sum, item) => sum + item.value);
 
       emit(MonitoringDataSuccessfull(data, totalEnergy));
     } catch (e) {
@@ -47,7 +45,7 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
   }
 
   void _startPolling() {
-    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+    _timer ??= Timer.periodic(const Duration(seconds: 3), (timer) {
       add(MonitoringDataPollEvent());
     });
   }
@@ -59,10 +57,7 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
         date: todayDateFormat(),
         type: "battery",
       );
-      int totalEnergy = 0;
-      for (var number in data) {
-        totalEnergy += number.value;
-      }
+      int totalEnergy = data.fold(0, (sum, item) => sum + item.value);
       emit(MonitoringDataSuccessfull(data, totalEnergy));
     } catch (e) {
       emit(MonitoringDataFailed('Failed to fetch battery data'));
@@ -75,14 +70,13 @@ class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
     return super.close();
   }
 
-  closePolling() {
+  void closePolling() {
     _timer?.cancel();
+    _timer = null; // Reset the timer to allow re-initialization
   }
 
-  checkifPolling() {
-    print("about to poll agian");
-    if (!_timer!.isActive || _timer?.isActive == null) {
-      print("starting polling agian man");
+  void checkIfPolling() {
+    if (_timer == null || !_timer!.isActive) {
       _startPolling();
     }
   }

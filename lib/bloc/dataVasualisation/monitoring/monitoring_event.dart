@@ -14,13 +14,9 @@ class FetchMonitoringDataEvent extends MonitoringEvent {
     required this.type
   });
 
-  @override
-  List<Object?> get props => super.props;
 }
 
 class MonitoringDataPollEvent extends MonitoringEvent {
   MonitoringDataPollEvent();
 
-  @override
-  List<Object?> get props => super.props;
 }

@@ -1,22 +1,29 @@
-import 'package:enpal/bloc/battery/monitoring_bloc.dart';
-import 'package:enpal/bloc/battery/monitoring_event.dart';
-import 'package:enpal/bloc/bloc_wrapper.dart';
-import 'package:enpal/bloc/house/house_bloc.dart';
-import 'package:enpal/bloc/house/house_event.dart';
-import 'package:enpal/bloc/solar/solar_bloc.dart';
-import 'package:enpal/bloc/solar/solar_event.dart';
-import 'package:enpal/presentation/Screens/home/tabs/BatteryTab.dart';
-import 'package:enpal/presentation/Screens/home/tabs/HouseTab.dart';
-import 'package:enpal/presentation/Screens/home/tabs/SolarTab.dart';
-import 'package:enpal/presentation/widget/DateFilter.dart';
+
+import 'package:enpal/bloc/dataVasualisation/battery_bloc.dart';
+import 'package:enpal/bloc/dataVasualisation/house_bloc.dart';
+import 'package:enpal/bloc/dataVasualisation/monitoring/monitoring_event.dart';
+import 'package:enpal/bloc/dataVasualisation/solar_bloc.dart';
+import 'package:enpal/bloc/theme/theme_bloc.dart';
+import 'package:enpal/bloc/theme/theme_event.dart';
+import 'package:enpal/presentation/screens/home/tabs/battery_tab.dart';
+import 'package:enpal/presentation/screens/home/tabs/house_tab.dart';
+import 'package:enpal/presentation/screens/home/tabs/solar_tab.dart';
+import 'package:enpal/presentation/widget/common/date_filter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Homescreen extends StatelessWidget {
   const Homescreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title:  Center(
+        child: ElevatedButton(
+          onPressed: () {
+            context.read<ThemeBloc>().add(ToggleThemeEvent());
+          },
+          child: const Text('Change Theme'),
+        ))),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
@@ -67,18 +74,16 @@ class Homescreen extends StatelessWidget {
       ),
     );
   }
-
   void _handleDateSelected(String selectedDate) {
-   MyBlocWrapper.batteryInstance.add(FetchMonitoringDataEvent(
+   BatteryBloc().add(FetchMonitoringDataEvent(
     type: 'battery',
       date: selectedDate,
     ));
-
-     MyBlocWrapper.batteryInstance.add(FetchMonitoringDataEvent(
+     SolarBloc().add(FetchMonitoringDataEvent(
     type: 'solar',
       date: selectedDate,
     ));
-     MyBlocWrapper.batteryInstance.add(FetchMonitoringDataEvent(
+     HouseBloc().add(FetchMonitoringDataEvent(
     type: 'house',
       date: selectedDate,
     ));
