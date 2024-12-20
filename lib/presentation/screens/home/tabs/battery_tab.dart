@@ -15,7 +15,7 @@ class BatteryTabScreen extends StatelessWidget {
         if (state is MonitoringDataIsLoading) {
           return Center(child: CircularProgressIndicator());
         } else if (state is MonitoringDataSuccessfull) {
-          return GrapheWidget(data: state.data, totalEnergy: state.totalEnergy, eneryType: 'Battery',);
+          return GrapheWidget(data: state.data, totalEnergy: state.totalEnergy, units: state.unit, eneryType: 'Battery',);
         } else if (state is MonitoringDataFailed) {
           return Center(child: Text(state.message));
         }

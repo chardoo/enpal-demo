@@ -26,9 +26,9 @@ class MonitoringDataFailed extends MonitoringState {
 // Success state with data and total energy
 class MonitoringDataSuccessfull extends MonitoringState {
   final List<MonitoringData> data;
-  final int totalEnergy;
-
-  MonitoringDataSuccessfull(this.data, this.totalEnergy);
+  final double totalEnergy;
+  final String unit;
+  MonitoringDataSuccessfull(this.data, this.totalEnergy, this.unit);
 
   @override
   List<Object?> get props => [data, totalEnergy];

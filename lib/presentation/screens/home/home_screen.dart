@@ -17,13 +17,16 @@ class Homescreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title:  Center(
-        child: ElevatedButton(
+      appBar: AppBar(actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+        children:[ ElevatedButton(
           onPressed: () {
             context.read<ThemeBloc>().add(ToggleThemeEvent());
           },
           child: const Text('Change Theme'),
-        ))),
+        )])
+      ],),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {

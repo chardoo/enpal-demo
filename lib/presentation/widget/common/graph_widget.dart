@@ -4,14 +4,16 @@ import 'package:fl_chart/fl_chart.dart';
 
 class GrapheWidget extends StatelessWidget {
   final List<MonitoringData> data;
-  final int totalEnergy;
+  final double totalEnergy;
   final String eneryType;
+  final String units;
 
   const GrapheWidget({
     super.key,
     required this.data,
     required this.totalEnergy,
     required this.eneryType,
+    required this.units,
   });
 
   @override
@@ -27,7 +29,7 @@ class GrapheWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(eneryType),
-                Text(totalEnergy.toString()),
+                Text('$totalEnergy $units'),
               ],
             ),
           ),
@@ -35,7 +37,7 @@ class GrapheWidget extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: SizedBox(
-            height: 400, // Give the LineChart a fixed height
+            height: 400, 
             child: LineChart(
               LineChartData(
                 gridData: FlGridData(show: true),
@@ -57,28 +59,34 @@ class GrapheWidget extends StatelessWidget {
                       reservedSize: 20,
                     ),
                   ),
-                  // Left Titles (Y-axis)
+                  // Left Titles (Y-axis) - Custom titles to display full numbers
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      reservedSize: 40,
+                      reservedSize: 50,
+                      getTitlesWidget: (value, meta) {
+                        return Text(
+                          value.toInt().toString(), 
+                          style: const TextStyle(fontSize: 12),
+                        );
+                      },
                     ),
                   ),
-                  // Disable Top Titles
+                  
                   topTitles: AxisTitles(
                     sideTitles: SideTitles(showTitles: false),
                   ),
-                  // Disable Right Titles
+            
                   rightTitles: AxisTitles(
                     sideTitles: SideTitles(showTitles: false),
                   ),
                 ),
-                // Customize border data to remove top and right lines
+               
                 borderData: FlBorderData(
                   show: true,
                   border: const Border(
-                    left: BorderSide(color: Colors.black),  // Keep left border
-                    bottom: BorderSide(color: Colors.black), // Keep bottom border
+                    left: BorderSide(color: Colors.black), 
+                    bottom: BorderSide(color: Colors.black), 
                   ),
                 ),
                 lineBarsData: [

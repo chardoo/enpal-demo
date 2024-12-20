@@ -14,7 +14,7 @@ class SolarTabScreen extends StatelessWidget {
         if (state is MonitoringDataIsLoading) {
           return Center(child: CircularProgressIndicator());
         } else if (state is MonitoringDataSuccessfull) {
-          return GrapheWidget(data: state.data, totalEnergy: state.totalEnergy, eneryType: 'Solar',);
+          return GrapheWidget(data: state.data, totalEnergy: state.totalEnergy,units: state.unit, eneryType: 'Solar',);
         } else if (state is MonitoringDataFailed) {
           return Center(child: Text(state.message));
         }
