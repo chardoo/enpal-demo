@@ -1,9 +1,8 @@
+import 'package:enpal/core/theme/theme_bloc.dart';
+import 'package:enpal/core/theme/theme_event.dart';
+import 'package:enpal/core/theme/theme_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bloc_test/bloc_test.dart';
-import 'package:enpal/bloc/theme/theme_bloc.dart';
-import 'package:enpal/bloc/theme/theme_event.dart';
-import 'package:enpal/bloc/theme/theme_state.dart';
-
 void main() {
   group('ThemeBloc Tests', () {
     late ThemeBloc themeBloc;

@@ -1,6 +1,6 @@
 
-import 'package:enpal/bloc/theme/theme_bloc.dart';
-import 'package:enpal/bloc/theme/theme_state.dart';
+import 'package:enpal/core/theme/theme_bloc.dart';
+import 'package:enpal/core/theme/theme_state.dart';
 import 'package:enpal/helper/bloc_init_helper.dart';
 import 'package:enpal/presentation/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
