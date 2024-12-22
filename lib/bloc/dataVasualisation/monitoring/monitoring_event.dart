@@ -15,3 +15,7 @@ class MonitoringDataPollEvent extends MonitoringEvent {
   final String type;
   MonitoringDataPollEvent(this.type);
 }
+
+class ChangeUnitEvent extends MonitoringEvent {
+  ChangeUnitEvent();
+}

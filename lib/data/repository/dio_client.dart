@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 
 class Api {
-  final Dio dio;
+  late final Dio dio;
 
   // Singleton instance
   Api._internal() : dio = _createDio();

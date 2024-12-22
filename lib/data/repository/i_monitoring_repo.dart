@@ -6,7 +6,7 @@ import 'package:enpal/data/models/monitoring_data.dart';
 /// This repository provides a contract for retrieving monitoring data, such as
 /// battery, solar, and house data, based on a specific date and type.
 ///from an API,
-abstract class MonitoringRepository {
+abstract class IMonitoringRepository {
   /// Retrieves monitoring data based on the provided [date] and [type].
   ///
   /// Parameters:

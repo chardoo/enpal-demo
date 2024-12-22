@@ -1,14 +1,17 @@
-
+import 'package:enpal/bloc/cubit/unit_preference_cubit.dart';
 import 'package:enpal/bloc/dataVasualisation/battery_bloc.dart';
 import 'package:enpal/bloc/dataVasualisation/house_bloc.dart';
 import 'package:enpal/bloc/dataVasualisation/monitoring/monitoring_event.dart';
 import 'package:enpal/bloc/dataVasualisation/solar_bloc.dart';
 import 'package:enpal/bloc/theme/theme_bloc.dart';
 import 'package:enpal/bloc/theme/theme_event.dart';
+import 'package:enpal/presentation/constants/widget_constants.dart';
 import 'package:enpal/presentation/screens/home/tabs/battery_tab.dart';
 import 'package:enpal/presentation/screens/home/tabs/house_tab.dart';
 import 'package:enpal/presentation/screens/home/tabs/solar_tab.dart';
 import 'package:enpal/presentation/widget/common/date_filter.dart';
+import 'package:enpal/presentation/widget/common/select_unit.dart';
+import 'package:enpal/utils/dateutils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,21 +20,23 @@ class Homescreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(actions: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-        children:[ ElevatedButton(
-          onPressed: () {
-            context.read<ThemeBloc>().add(ToggleThemeEvent());
-          },
-          child: const Text('Change Theme'),
-        )])
-      ],),
+      appBar: AppBar(
+        actions: [
+          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+            ElevatedButton(
+              onPressed: () {
+                context.read<ThemeBloc>().add(ToggleThemeEvent());
+              },
+              child: const Text(WidgetConstants.themeText),
+            )
+          ])
+        ],
+      ),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            final currentDate = DateTime.now().toString().substring(0, 10);
-            _handleDateSelected(currentDate);
+            final currentDate = todayDateFormat();
+            _handleDateSelected(context, currentDate);
           },
           child: SingleChildScrollView(
             physics:
@@ -40,11 +45,23 @@ class Homescreen extends StatelessWidget {
               children: [
                 SizedBox(
                   height: 40,
-                  child: DateFilter(onDateSelected: _handleDateSelected),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SelectUnitWidget(
+                        items: WidgetConstants.energyUnits,
+                        onUnitSelect: (unit) =>
+                            _handleUnitSelect(context, unit),
+                      ),
+                      DateFilter(
+                          onDateSelected: (date) =>
+                              _handleDateSelected(context, date)),
+                    ],
+                  ),
                 ),
                 SizedBox(
                   height: MediaQuery.of(context).size.height -
-                      100, // Adjust height dynamically
+                      140, // Adjust height dynamically
                   child: DefaultTabController(
                     length: 3,
                     child: Column(
@@ -77,19 +94,33 @@ class Homescreen extends StatelessWidget {
       ),
     );
   }
-  void _handleDateSelected(String selectedDate) {
-   BatteryBloc().add(FetchMonitoringDataEvent(
-    type: 'battery',
-      date: selectedDate,
-    ));
-     SolarBloc().add(FetchMonitoringDataEvent(
-    type: 'solar',
-      date: selectedDate,
-    ));
-     HouseBloc().add(FetchMonitoringDataEvent(
-    type: 'house',
-      date: selectedDate,
-    ));
-   
+
+  void _handleDateSelected(BuildContext context, String selectedDate) {
+    try {
+      context.read<BatteryBloc>().add(FetchMonitoringDataEvent(
+            type: 'battery',
+            date: selectedDate,
+          ));
+      context.read<SolarBloc>().add(FetchMonitoringDataEvent(
+            type: 'solar',
+            date: selectedDate,
+          ));
+      context.read<HouseBloc>().add(FetchMonitoringDataEvent(
+            type: 'house',
+            date: selectedDate,
+          ));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(WidgetConstants.fetchErrorMessage)),
+      );
+    }
+  }
+
+  void _handleUnitSelect(BuildContext context, String? selectedUnit) {
+    if (selectedUnit != null) {
+      context
+          .read<UnitPreferenceCubit>()
+          .toggleUnit(); // Assuming this toggles the unit
+    }
   }
 }
