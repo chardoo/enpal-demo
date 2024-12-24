@@ -13,8 +13,8 @@ class HouseTabScreen extends StatelessWidget {
       builder: (context, state) {
         if (state is MonitoringDataIsLoading) {
           return Center(child: CircularProgressIndicator());
-        } else if (state is MonitoringDataSuccessfull) {
-         return GrapheWidget(data: state.data, totalEnergy: state.totalEnergy,units: state.unit, eneryType: WidgetConstants.houseTabTitle,);
+        } else if (state is DataSuccessful) {
+         return GraphWidget(data: state.data, totalEnergy: state.totalEnergy,units: state.unit, energyType: WidgetConstants.houseTabTitle,);
         } else if (state is MonitoringDataFailed) {
           return Center(child: Text(state.message));
         }

@@ -1,28 +1,37 @@
 import 'package:enpal/utils/dateutils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 class DateFilter extends StatefulWidget {
   final Function(String) onDateSelected;
-  String initialDate;
-  DateFilter({
+  final String selectedDate; // Add selectedDate parameter
+
+  const DateFilter({
     super.key,
     required this.onDateSelected,
-    String? initialDate,
-  }) : initialDate = initialDate ??
-            todayDateFormat();
+    required this.selectedDate,
+  });
 
   @override
-  _DateFilterState createState() => _DateFilterState();
+  DateFilterState createState() => DateFilterState();
 }
 
-class _DateFilterState extends State<DateFilter> {
+class DateFilterState extends State<DateFilter> {
   late String _selectedDate;
 
   @override
   void initState() {
     super.initState();
-    _selectedDate = widget.initialDate;
+    _selectedDate = widget.selectedDate; // Initialize with the passed value
+  }
+
+  @override
+  void didUpdateWidget(covariant DateFilter oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedDate != widget.selectedDate) {
+      setState(() {
+        _selectedDate = widget.selectedDate;
+      });
+    }
   }
 
   Future<void> _pickDate() async {
@@ -66,14 +75,16 @@ class _DateFilterState extends State<DateFilter> {
         ),
         IconButton(
           icon: const Icon(Icons.navigate_next),
-          onPressed: todayDateFormat() == _selectedDate? null:  () {
-            final nextDate =
-                DateTime.parse(_selectedDate).add(const Duration(days: 1));
-            setState(() {
-              _selectedDate = DateFormat('yyyy-MM-dd').format(nextDate);
-            });
-            widget.onDateSelected(_selectedDate);
-          },
+          onPressed: todayDateFormat() == _selectedDate
+              ? null
+              : () {
+                  final nextDate = DateTime.parse(_selectedDate)
+                      .add(const Duration(days: 1));
+                  setState(() {
+                    _selectedDate = DateFormat('yyyy-MM-dd').format(nextDate);
+                  });
+                  widget.onDateSelected(_selectedDate);
+                },
         ),
       ],
     );

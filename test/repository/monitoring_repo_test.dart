@@ -3,6 +3,7 @@ import 'package:enpal/core/constants/api_constant.dart';
 import 'package:enpal/data/models/monitoring_data.dart';
 import 'package:enpal/data/repository/dio_client.dart';
 import 'package:enpal/data/repository/impl/monitoring_repo.dart';
+import 'package:enpal/data/storage/cache.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -14,17 +15,19 @@ void main() {
 
   setUp(() {
     mockDio = MockDio();
-    monitoringRepository = MonitoringRepository();
+    AppDatabase database = AppDatabase();
+    monitoringRepository = MonitoringRepository(db: database);
 
     // Override the Dio instance in the Api class with the mocked Dio.
-    Api().dio  = mockDio;
+    Api().dio = mockDio;
   });
 
   group('MonitoringRepository - getMonitoringData', () {
     const String date = '2024-12-22';
     const String type = 'battery';
 
-    test('returns a list of MonitoringData when API response is successful', () async {
+    test('returns a list of MonitoringData when API response is successful',
+        () async {
       // Arrange
       final mockResponseData = [
         {"value": 500, "timestamp": "2024-12-22T10:00:00.000Z"},
@@ -42,13 +45,15 @@ void main() {
           )).thenAnswer((_) async => mockResponse);
 
       // Act
-      final result = await monitoringRepository.getMonitoringData(date: date, type: type);
+      final result =
+          await monitoringRepository.getMonitoringData(date: date, type: type);
 
       // Assert
       expect(result, isA<List<MonitoringData>>());
       expect(result.length, 2);
       expect(result.first.value, 500);
-      expect(result.first.timestamp, DateTime.parse("2024-12-22T10:00:00.000Z"));
+      expect(
+          result.first.timestamp, DateTime.parse("2024-12-22T10:00:00.000Z"));
     });
 
     test('throws an exception when API response data is not a list', () async {
@@ -66,8 +71,10 @@ void main() {
 
       // Act & Assert
       expect(
-        () async => await monitoringRepository.getMonitoringData(date: date, type: type),
-        throwsA(isA<Exception>().having((e) => e.toString(), 'message', contains('Invalid data format'))),
+        () async => await monitoringRepository.getMonitoringData(
+            date: date, type: type),
+        throwsA(isA<Exception>().having(
+            (e) => e.toString(), 'message', contains('Invalid data format'))),
       );
     });
 
@@ -88,8 +95,10 @@ void main() {
 
       // Act & Assert
       expect(
-        () async => await monitoringRepository.getMonitoringData(date: date, type: type),
-        throwsA(isA<Exception>().having((e) => e.toString(), 'message', contains('API Error'))),
+        () async => await monitoringRepository.getMonitoringData(
+            date: date, type: type),
+        throwsA(isA<Exception>()
+            .having((e) => e.toString(), 'message', contains('API Error'))),
       );
     });
 
@@ -102,8 +111,10 @@ void main() {
 
       // Act & Assert
       expect(
-        () async => await monitoringRepository.getMonitoringData(date: date, type: type),
-        throwsA(isA<Exception>().having((e) => e.toString(), 'message', contains('Unexpected Error'))),
+        () async => await monitoringRepository.getMonitoringData(
+            date: date, type: type),
+        throwsA(isA<Exception>().having(
+            (e) => e.toString(), 'message', contains('Unexpected Error'))),
       );
     });
   });

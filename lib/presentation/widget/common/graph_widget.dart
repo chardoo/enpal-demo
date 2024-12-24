@@ -2,17 +2,17 @@ import 'package:enpal/data/models/monitoring_data.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-class GrapheWidget extends StatelessWidget {
+class GraphWidget extends StatelessWidget {
   final List<MonitoringData> data;
   final double totalEnergy;
-  final String eneryType;
+  final String energyType;
   final String units;
 
-  const GrapheWidget({
+  const GraphWidget({
     super.key,
     required this.data,
     required this.totalEnergy,
-    required this.eneryType,
+    required this.energyType,
     required this.units,
   });
 
@@ -28,7 +28,7 @@ class GrapheWidget extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(eneryType),
+                Text(energyType),
                 Text('$totalEnergy $units'),
               ],
             ),
@@ -38,7 +38,7 @@ class GrapheWidget extends StatelessWidget {
           padding: const EdgeInsets.all(10.0),
           child: SizedBox(
             height: MediaQuery.of(context).size.height -
-                      300, 
+                      400, 
             child: LineChart(
               LineChartData(
                 gridData: FlGridData(show: true),

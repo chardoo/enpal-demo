@@ -8,15 +8,18 @@ import 'package:enpal/bloc/dataVasualisation/monitoring/monitoring_event.dart';
 import 'package:enpal/bloc/dataVasualisation/monitoring/monitoring_state.dart';
 import 'package:enpal/data/models/monitoring_data.dart';
 import 'package:enpal/data/repository/impl/monitoring_repo.dart';
+import 'package:enpal/data/storage/cache.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
 void main() {
   late MonitoringRepository mockMonitoringRepo;
   late UnitPreferenceCubit mockUnitPreferenceCubit;
   late BatteryBloc batteryBloc;
 
   setUp(() {
-    mockMonitoringRepo = MonitoringRepository();
+    AppDatabase database = AppDatabase();
+    mockMonitoringRepo = MonitoringRepository(db: database);
     mockUnitPreferenceCubit = UnitPreferenceCubit();
 
     when(() => mockUnitPreferenceCubit.state).thenReturn('watts');
@@ -33,7 +36,7 @@ void main() {
 
   group('BatteryBloc Tests', () {
     blocTest<BatteryBloc, MonitoringState>(
-      'emits [MonitoringDataIsLoading, MonitoringDataSuccessfull] when FetchMonitoringDataEvent is added',
+      'emits [MonitoringDataIsLoading, MonitoringData] when FetchMonitoringDataEvent is added',
       setUp: () {
         final mockData = [
           MonitoringData(value: 500, timestamp: DateTime(2024, 12, 22)),
@@ -52,8 +55,8 @@ void main() {
       )),
       expect: () => [
         MonitoringDataIsLoading(),
-        isA<MonitoringDataSuccessfull>()
-            .having((state) => state.data.length, 'graphData length', 2)
+        isA<MonitoringData>()
+            .having((state) => state., 'graphData length', 2)
             .having((state) => state.totalEnergy, 'totalEnergy', 800.0),
       ],
       verify: (_) {
@@ -79,7 +82,8 @@ void main() {
       )),
       expect: () => [
         MonitoringDataIsLoading(),
-        MonitoringDataFailed('Failed to fetch data: Exception: Error fetching data'),
+        MonitoringDataFailed(
+            'Failed to fetch data: Exception: Error fetching data'),
       ],
     );
 
@@ -99,7 +103,7 @@ void main() {
       build: () => batteryBloc,
       act: (bloc) => bloc.add(MonitoringDataPollEvent('battery')),
       expect: () => [
-        isA<MonitoringDataSuccessfull>()
+        isA<MonitoringData>()
             .having((state) => state.data.length, 'graphData length', 2)
             .having((state) => state.totalEnergy, 'totalEnergy', 600.0),
       ],

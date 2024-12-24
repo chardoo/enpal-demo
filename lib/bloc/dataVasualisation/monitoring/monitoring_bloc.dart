@@ -65,7 +65,7 @@ abstract class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
     }
   }
 
-  MonitoringDataSuccessfull _transformData(List<MonitoringData> data) {
+  DataSuccessful _transformData(List<MonitoringData> data) {
     final unit = unitPreferenceCubit.state;
     final graphData = (unit == 'kw')
         ? data
@@ -74,7 +74,7 @@ abstract class MonitoringBloc extends Bloc<MonitoringEvent, MonitoringState> {
             .toList()
         : data;
     final totalEnergy = graphData.fold(0.0, (sum, item) => sum + item.value);
-    return MonitoringDataSuccessfull(graphData, totalEnergy, unit);
+    return DataSuccessful(graphData, totalEnergy, unit);
   }
 
   void closePolling() {

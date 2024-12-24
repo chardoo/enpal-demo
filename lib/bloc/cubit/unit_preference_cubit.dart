@@ -1,8 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+enum UnitType { watts, kw }
 class UnitPreferenceCubit extends Cubit<String> {
 
-  UnitPreferenceCubit._internal() : super('watts');
+  UnitPreferenceCubit._internal() : super(UnitType.watts.name);
 
   static final UnitPreferenceCubit _instance = UnitPreferenceCubit._internal();
 
@@ -10,6 +11,7 @@ class UnitPreferenceCubit extends Cubit<String> {
 
   /// Toggles between 'watts' and 'kw'.
   void toggleUnit() {
-    emit(state == 'watts' ? 'kw' : 'watts');
+    final currentUnit =  state == UnitType.watts.name ? UnitType.kw : UnitType.watts;
+    emit(currentUnit.name);
   }
 }

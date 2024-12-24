@@ -26,10 +26,10 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: GrapheWidget(
+            body: GraphWidget(
               data: sampleData,
               totalEnergy: totalEnergy,
-              eneryType: energyType,
+              energyType: energyType,
               units: unit,
             ),
           ),
@@ -46,10 +46,10 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: GrapheWidget(
+            body: GraphWidget(
               data: sampleData,
               totalEnergy: totalEnergy,
-              eneryType: energyType,
+              energyType: energyType,
               units: unit,
             ),
           ),

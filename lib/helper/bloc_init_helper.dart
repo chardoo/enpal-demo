@@ -4,16 +4,18 @@ import 'package:enpal/bloc/dataVasualisation/house_bloc.dart';
 import 'package:enpal/bloc/dataVasualisation/monitoring/monitoring_event.dart';
 import 'package:enpal/bloc/dataVasualisation/solar_bloc.dart';
 import 'package:enpal/data/repository/impl/monitoring_repo.dart';
+import 'package:enpal/data/storage/cache.dart';
 import 'package:enpal/utils/dateutils.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 MultiBlocProvider initCoreBlocs(Widget view) {
+   final AppDatabase db = AppDatabase.instance();
   return MultiBlocProvider(
     providers: [
      
         BlocProvider(
-        create: (context) => SolarBloc(monitoringRepo:  MonitoringRepository(), unitPreferenceCubit: UnitPreferenceCubit())
+        create: (context) => SolarBloc(monitoringRepo:  MonitoringRepository(db: db), unitPreferenceCubit: UnitPreferenceCubit())
           ..add(FetchMonitoringDataEvent(
             type: 'solar',
               date:
@@ -21,7 +23,7 @@ MultiBlocProvider initCoreBlocs(Widget view) {
             )),
       ),
        BlocProvider(
-        create: (context) => HouseBloc(monitoringRepo:  MonitoringRepository(), unitPreferenceCubit: UnitPreferenceCubit())
+        create: (context) => HouseBloc(monitoringRepo:  MonitoringRepository(db: db), unitPreferenceCubit: UnitPreferenceCubit())
           ..add(FetchMonitoringDataEvent(
             type: 'house',
               date:
@@ -30,7 +32,7 @@ MultiBlocProvider initCoreBlocs(Widget view) {
       ),
      
       BlocProvider(
-        create: (context) => BatteryBloc(monitoringRepo: MonitoringRepository(), unitPreferenceCubit: UnitPreferenceCubit())
+        create: (context) => BatteryBloc(monitoringRepo: MonitoringRepository(db: db), unitPreferenceCubit: UnitPreferenceCubit())
           ..add(FetchMonitoringDataEvent(
             type: 'battery',
               date:

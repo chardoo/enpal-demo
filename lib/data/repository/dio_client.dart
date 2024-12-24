@@ -15,7 +15,7 @@ class Api {
   static Dio _createDio() {
     return Dio(
       BaseOptions(
-        baseUrl: "http://localhost:3000",
+        baseUrl: "https://94e3-193-148-48-113.ngrok-free.app",
         receiveTimeout: const Duration(seconds: 15),
         connectTimeout: const Duration(seconds: 15),
         sendTimeout: const Duration(seconds: 15),

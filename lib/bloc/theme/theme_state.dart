@@ -1,4 +1,4 @@
-import 'package:enpal/core/theme/them_data.dart';
+import 'package:enpal/core/theme/theme_data.dart';
 import 'package:flutter/material.dart';
 
 abstract class ThemeState {

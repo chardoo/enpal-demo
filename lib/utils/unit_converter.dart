@@ -3,7 +3,7 @@ import 'package:enpal/bloc/dataVasualisation/monitoring/monitoring_state.dart';
 import 'package:enpal/data/models/monitoring_data.dart';
 
 class UnitConverter {
-   MonitoringDataSuccessfull transformValueAndGetTotal(
+   DataSuccessful transformValueAndGetTotal(
       List<MonitoringData> data) {
     List<MonitoringData> graphData;
     final unit = UnitPreferenceCubit().state;
@@ -16,7 +16,7 @@ class UnitConverter {
       graphData = data;
     }
     double totalEnergy = graphData.fold(0, (sum, item) => sum + item.value);
-    final success = MonitoringDataSuccessfull(graphData, totalEnergy, unit);
+    final success = DataSuccessful(graphData, totalEnergy, unit);
     return success;
   }
 }

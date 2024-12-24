@@ -6,7 +6,7 @@ class AppThemes {
     primaryColor: const Color.fromARGB(255, 14, 38, 58),
     scaffoldBackgroundColor: Colors.white,
     appBarTheme: const AppBarTheme(
-      backgroundColor:const Color.fromARGB(255, 14, 38, 58),
+      backgroundColor: Color.fromARGB(255, 14, 38, 58),
       foregroundColor: Colors.white,
     ),
     textTheme: const TextTheme(

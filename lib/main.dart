@@ -1,15 +1,17 @@
 
-import 'package:enpal/core/theme/theme_bloc.dart';
-import 'package:enpal/core/theme/theme_state.dart';
+import 'package:enpal/bloc/theme/theme_cubit.dart';
+import 'package:enpal/bloc/theme/theme_state.dart';
 import 'package:enpal/helper/bloc_init_helper.dart';
 import 'package:enpal/presentation/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
+
+ 
   runApp(
     BlocProvider(
-      create: (context) => ThemeBloc(),
+      create: (context) => ThemeCubit(),
       child: const MyApp(),
     ),
   );
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeBloc, ThemeState>(
+    return BlocBuilder<ThemeCubit, ThemeState>(
       builder: (context, state) {
         return MaterialApp(
           title: 'Theme Toggle App',
@@ -36,6 +38,6 @@ class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    return initCoreBlocs(Homescreen());
+    return initCoreBlocs(HomeScreen());
   }
 }
