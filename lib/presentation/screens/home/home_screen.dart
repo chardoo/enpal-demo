@@ -1,9 +1,9 @@
+import 'package:enpal/bloc/cubit/theme/theme_cubit.dart';
 import 'package:enpal/bloc/cubit/unit_preference_cubit.dart';
 import 'package:enpal/bloc/dataVasualisation/battery_bloc.dart';
 import 'package:enpal/bloc/dataVasualisation/house_bloc.dart';
 import 'package:enpal/bloc/dataVasualisation/monitoring/monitoring_event.dart';
 import 'package:enpal/bloc/dataVasualisation/solar_bloc.dart';
-import 'package:enpal/bloc/theme/theme_cubit.dart';
 import 'package:enpal/presentation/constants/widget_constants.dart';
 import 'package:enpal/presentation/screens/home/tabs/battery_tab.dart';
 import 'package:enpal/presentation/screens/home/tabs/house_tab.dart';

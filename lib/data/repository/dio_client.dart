@@ -2,23 +2,29 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 
 class Api {
-  late final Dio dio;
+ late Dio dio;
 
   // Singleton instance
-  Api._internal() : dio = _createDio();
+  Api._internal() {
+    dio = _createDio();
+  }
 
-  static final Api _singleton = Api._internal();
+  static final Api _instance = Api._internal();
 
-  factory Api() => _singleton;
+  factory Api() => _instance;
 
-  // Create and configure Dio instance
-  static Dio _createDio() {
+  // Reset Dio for testing
+  void resetDio(Dio mockDio) {
+    dio = mockDio;
+  }
+
+  // Create a default Dio instance
+  Dio _createDio() {
     return Dio(
       BaseOptions(
         baseUrl: "https://94e3-193-148-48-113.ngrok-free.app",
-        receiveTimeout: const Duration(seconds: 15),
         connectTimeout: const Duration(seconds: 15),
-        sendTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 15),
       ),
     )..interceptors.add(AppInterceptors());
   }
@@ -27,24 +33,26 @@ class Api {
 class AppInterceptors extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    options.headers['Content-Type'] = 'application/json';
-    options.headers['Access-Control-Allow-Origin'] = '*';
-    options.headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT, DELETE, HEAD';
+    options.headers.addAll({
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS, PUT, DELETE, HEAD',
+    });
 
-    print('Sending request to ${options.uri}');
-    handler.next(options);
+    print('Request [${options.method}] => PATH: ${options.path}');
+    handler.next(options); // Continue request
   }
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    print('Response received: ${response.statusCode}');
-    handler.next(response);
+    print('Response [${response.statusCode}] => PATH: ${response.requestOptions.path}');
+    handler.next(response); // Pass the response forward
   }
 
   @override
-  Future onError(DioException err, ErrorInterceptorHandler handler) async {
-    print('Error occurred: ${err.response?.statusCode} - ${err.message}');
-    
+  Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
+    print('Error [${err.response?.statusCode}] => PATH: ${err.requestOptions.path}');
+
     // Handle specific HTTP status codes
     switch (err.response?.statusCode) {
       case 400:
@@ -65,40 +73,40 @@ class AppInterceptors extends Interceptor {
       default:
         handler.reject(DioException(
           requestOptions: err.requestOptions,
-          message: 'An unexpected error occurred.',
+          message: 'An unexpected error occurred: ${err.message}',
         ));
         break;
     }
   }
 }
 
-// Exception classes
+// Exception classes for specific error types
 class BadRequestException extends DioException {
   BadRequestException(RequestOptions r) : super(requestOptions: r);
   @override
-  String toString() => 'Invalid request';
+  String toString() => 'Bad Request: The server could not understand the request.';
 }
 
 class UnauthorizedException extends DioException {
   UnauthorizedException(RequestOptions r) : super(requestOptions: r);
   @override
-  String toString() => 'Access denied';
+  String toString() => 'Unauthorized: Access is denied.';
 }
 
 class NotFoundException extends DioException {
   NotFoundException(RequestOptions r) : super(requestOptions: r);
   @override
-  String toString() => 'The requested information could not be found';
+  String toString() => 'Not Found: The requested resource could not be located.';
 }
 
 class ConflictException extends DioException {
   ConflictException(RequestOptions r) : super(requestOptions: r);
   @override
-  String toString() => 'Conflict occurred';
+  String toString() => 'Conflict: The request could not be processed due to a conflict.';
 }
 
 class InternalServerErrorException extends DioException {
   InternalServerErrorException(RequestOptions r) : super(requestOptions: r);
   @override
-  String toString() => 'Unknown error occurred, please try again later.';
+  String toString() => 'Internal Server Error: An unexpected error occurred on the server.';
 }

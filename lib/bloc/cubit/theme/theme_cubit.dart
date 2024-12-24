@@ -1,8 +1,8 @@
 
-import 'package:enpal/bloc/theme/theme_state.dart';
+import 'package:enpal/bloc/cubit/theme/theme_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 class ThemeCubit extends Cubit<ThemeState> {
-  ThemeCubit() : super(LightThemeState());
+  ThemeCubit() : super(DarkThemeState());
 
   // Toggles between Light and Dark themes
   void toggleTheme() {

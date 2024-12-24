@@ -24,7 +24,7 @@ class MonitoringCache extends Table {
 // Drift Database
 @DriftDatabase(tables: [MonitoringCache])
 class AppDatabase extends _$AppDatabase {
-  static AppDatabase instance() => AppDatabase();
+ 
 
   AppDatabase() : super(_openConnection());
 

@@ -17,7 +17,7 @@ void main() {
           timestamp: DateTime.parse('2024-12-16T00:15:00.000Z'), value: 3000),
     ];
 
-    const double totalEnergy = 7500;
+    const double totalEnergy = 7500.0;
     const String energyType = 'Solar';
     const String unit = 'watts';
 
@@ -36,9 +36,11 @@ void main() {
         ),
       );
 
+      // Assert that the energy type is displayed
       expect(find.text(energyType), findsOneWidget);
 
-      expect(find.text(totalEnergy.toString()), findsOneWidget);
+      // Assert that total energy is displayed with the unit
+      expect(find.text('$totalEnergy $unit'), findsOneWidget);
     });
 
     testWidgets('Displays the LineChart with the correct number of points',
@@ -56,7 +58,21 @@ void main() {
         ),
       );
 
+      // Assert that the LineChart widget is rendered
       expect(find.byType(LineChart), findsOneWidget);
+
+      // Optionally, check the number of data points passed to the chart
+      final lineChartFinder = find.byType(LineChart);
+      expect(lineChartFinder, findsOneWidget);
+
+      // Ensure the data points match the sample data
+      final LineChart chart = tester.widget(lineChartFinder) as LineChart;
+      final List<FlSpot> chartData = (chart.data as LineChartData)
+          .lineBarsData
+          .first
+          .spots;
+
+      expect(chartData.length, sampleData.length);
     });
   });
 }

@@ -10,7 +10,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 MultiBlocProvider initCoreBlocs(Widget view) {
-   final AppDatabase db = AppDatabase.instance();
+   final AppDatabase db = AppDatabase();
   return MultiBlocProvider(
     providers: [
      

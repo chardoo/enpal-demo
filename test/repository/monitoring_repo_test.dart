@@ -12,14 +12,26 @@ class MockDio extends Mock implements Dio {}
 void main() {
   late MockDio mockDio;
   late MonitoringRepository monitoringRepository;
+  late AppDatabase database;
+
+  setUpAll(() {
+    // Initialize shared AppDatabase instance
+    database = AppDatabase();
+  });
 
   setUp(() {
+    // Create a fresh mock Dio for each test
     mockDio = MockDio();
-    AppDatabase database = AppDatabase();
-    monitoringRepository = MonitoringRepository(db: database);
 
-    // Override the Dio instance in the Api class with the mocked Dio.
-    Api().dio = mockDio;
+    // Reset Dio in the Api class
+    Api().resetDio(mockDio);
+
+    // Create a MonitoringRepository instance with the shared AppDatabase
+    monitoringRepository = MonitoringRepository(db: database);
+  });
+
+  tearDownAll(() async {
+    await database.close(); // Ensure database is closed after all tests
   });
 
   group('MonitoringRepository - getMonitoringData', () {
